@@ -1,15 +1,24 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="kampus.User" %>
+<%@page import="java.time.LocalDateTime" %>
+<%@page import="java.time.format.DateTimeFormatter" %>
 <%
     String nama = "Budi";
+    LocalDateTime sekarang = LocalDateTime.now();
+    DateTimeFormatter cetakTanggal = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     User user = new User();
-    if(session.getAttribute("id")!=null) {
-        String id=(String)session.getAttribute("id");  
-        user.baca(id, "DOSEN");        
-    } else {
+
+    // check session var "id", kalau tidak kosong berarti baca sebagai id user
+    if (session.getAttribute("id") != null) {
+        String id = (String) session.getAttribute("id");
+        user.baca(id, "DOSEN");  // semenntara, semua logi diaggap sebagai login dosen
+        
+        
+        
+    } else { // kalau sessio var "id" kosong, redirect ke halama login
         response.sendRedirect("login.jsp");
     }
-   %>
+%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -20,12 +29,18 @@
     </head>
 
     <body>
-        Halo, <%=user.getNama()%> <a href="logout.jsp">logout</a>
-        <ul>
-            <li><a href="data_mahasiswa.jsp" class="btn btn-primary">Mahasiswa</a></li>
-            <li><a href="data_dosen.jsp" class="btn btn-info">Dosen</a></li>
-            <li><a href="data_user.jsp" class="btn btn-warning">User</a></li>
-
-        </ul>
+        <div class="p-2 mb-2 text-center" style="background-color: lightgray">
+            Halo, <%=user.getNama()%> <a href="logout.jsp">logout</a> - <%= cetakTanggal.format(sekarang) %>
+        </div>
+        <div class="text-center">
+            <a href="data_mahasiswa.jsp" class="btn btn-primary">Mahasiswa</a>
+            <a href="data_kelas.jsp" class="btn btn-primary">Kelas</a>
+            <a href="data_matakuliah.jsp" class="btn btn-info">Mata Kuliah</a>
+            <a href="data_dosen.jsp" class="btn btn-info">Dosen</a>
+            <a href="data_user.jsp" class="btn btn-warning">User</a>
+        </div>
+        <div class="text-center">
+            <img src="image/logo.png" style="width:300px">
+        </div>
     </body>
 </html>
