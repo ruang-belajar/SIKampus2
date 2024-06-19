@@ -47,8 +47,8 @@
                                     <input type="text" name="username" id="username" class="form-control">
                                 </div>
                                 <div class="form-group">
-                                    <label for="password" class="text-info">Password:</label><br>
-                                    <input type="text" name="password" id="password" class="form-control">
+                                    <label for="password" class="text-info" >Password:</label><br>
+                                    <input type="password" name="password" id="password" class="form-control">
                                 </div>
                                 <div class="form-group">
                                     <label for="remember-me" class="text-info"><span>Remember me</span> <span><input id="remember-me" name="remember-me" type="checkbox"></span></label><br>

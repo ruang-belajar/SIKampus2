@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package kampus;
 
 import java.sql.Connection;
@@ -10,24 +6,25 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author En Tay
- */
-public class Kelas {
+public class Peserta {
 
-    public String kode;
-    public String dosenNid;
-    public String status;
-    private String errMsg = "";
+    public String kelasKode;
+    public String nim;
+    public Double kehadiran;
+    public Double tugas;
+    public Double ujian;
+    private String mahasiswaNama;
+    protected String errMsg = "";
 
-    public Kelas() {
-        this.kode = "";
-        this.dosenNid = "";
-        this.status = "AKTIF";
+    public Peserta() {
+        kelasKode = "";
+        nim = "";
+        kehadiran = 0.0;
+        tugas = 0.0;
+        ujian = 0.0;
     }
 
-    public boolean baca(String nid) {
+    public boolean baca(String kelasKode, String nim) {
         Connection connection = null;
         ResultSet rs = null;
 
@@ -36,18 +33,26 @@ public class Kelas {
 
             if (!connection.isClosed()) {
                 // 1. sesuaikan string SQL
-                String sql = "SELECT * FROM kelas where kode=?";
+                String sql = "SELECT kelasKode, peserta.nim, nama, kehadiran, tugas, ujian"
+                        + " FROM peserta "
+                        + " inner join mahasiswa on peserta.nim=mahasiswa.nim"
+                        + " where kelasKode=? and peserta.nim=?";
                 PreparedStatement st = connection.prepareStatement(sql);
 
                 // 2. sesuaikan parameter
-                st.setString(1, nid);
+                st.setString(1, kelasKode);
+                st.setString(2, nim);
                 rs = st.executeQuery();
 
                 if (rs.next()) {
                     //3. isi property dengan data yang dibaca dari database
-                    this.kode = rs.getString("kode");
-                    this.dosenNid = rs.getString("dosenNid");
-                    this.status = rs.getString("status");
+                    this.kelasKode = rs.getString("kelasKode");
+                    this.nim = rs.getString("nim");
+                    this.mahasiswaNama = rs.getString("nama");
+                    this.kehadiran = Double.valueOf(rs.getString("kehadiran"));
+                    this.tugas = Double.valueOf(rs.getString("tugas"));
+                    this.ujian = Double.valueOf(rs.getString("ujian"));
+
                     connection.close();
                     return true; // menandakan data ditemukan
                 }
@@ -67,13 +72,16 @@ public class Kelas {
 
             if (!connection.isClosed()) {
                 // 1. sesuaikan string SQL
-                String sql = "INSERT INTO kelas (kode,dosenNid,status) values (?,?,?)";
+                String sql = "INSERT INTO peserta (kelasKode,nim,kehadiran,tugas,ujian) values (?,?,?,?,?)";
                 PreparedStatement st = connection.prepareStatement(sql);
 
                 // 2. sesuaikan parameter
-                st.setString(1, this.kode);
-                st.setString(2, this.dosenNid);
-                st.setString(3, this.status);
+                st.setString(1, this.kelasKode);
+                st.setString(2, this.nim);
+                st.setDouble(3, this.kehadiran);
+                st.setDouble(4, this.tugas);
+                st.setDouble(5, this.ujian);
+
                 st.executeUpdate();
                 connection.close();
                 return true; // menandakan kalau operasi INSERT berhasil
@@ -95,13 +103,15 @@ public class Kelas {
 
             if (!connection.isClosed()) {
                 // 1. sesuaikan string SQL
-                String sql = "UPDATE kelas SET dosenNid=?, status=? WHERE kode=?";
+                String sql = "UPDATE peserta SET kehadiran=?, tugas=?, ujian=? WHERE kelasKode=? and nim=?";
                 PreparedStatement st = connection.prepareStatement(sql);
 
                 // 2. sesuaikan parameter
-                st.setString(1, this.dosenNid);
-                st.setString(2, this.status);
-                st.setString(3, this.kode);
+                st.setDouble(1, this.kehadiran);
+                st.setDouble(2, this.tugas);
+                st.setDouble(3, this.ujian);
+                st.setString(4, this.kelasKode);
+                st.setString(5, this.nim);
 
                 st.executeUpdate();
                 connection.close();
@@ -116,19 +126,11 @@ public class Kelas {
         }
     }
     
-    public boolean pesertaTambah(String nim) {
-        Peserta peserta = new Peserta();
-        peserta.kelasKode = kode;
-        peserta.nim = nim;
-        if(peserta.tambah()) {
-            return true;
-        } else {
-            errMsg = peserta.getErrMsg();
-            return false;
-        }
+    public String getMahasiswaNama() {
+        return this.mahasiswaNama;
     }
 
-    public List<Peserta> getListPeserta() {
+    public static List<Peserta> getList(String kelasKode) {
         List<Peserta> result = new ArrayList<>();
 
         Connection connection = null;
@@ -141,44 +143,17 @@ public class Kelas {
                 // prepare select statement
                 String sql = "SELECT * FROM peserta where kelasKode=?";
                 PreparedStatement st = connection.prepareStatement(sql);
-                st.setString(1, kode);
+                st.setString(1, kelasKode);
                 rs = st.executeQuery();
 
                 while (rs.next()) {
-                    Peserta p = new Peserta();
-                    if (p.baca(kode, rs.getString("nim"))) {
-                        result.add(p);
-                    }
-                }
-
-            }
-            return result;
-        } catch (Exception ex) {
-            return null;
-        }
-    }
-
-    public static List<Kelas> getList() {
-        List<Kelas> result = new ArrayList<>();
-
-        Connection connection = null;
-        ResultSet rs = null;
-
-        try {
-            connection = DatabaseTest.connect();
-
-            if (!connection.isClosed()) {
-                // prepare select statement
-                String sql = "SELECT * FROM kelas";
-                PreparedStatement st = connection.prepareStatement(sql);
-                rs = st.executeQuery();
-
-                while (rs.next()) {
-                    Kelas k = new Kelas();
-                    k.kode = rs.getString("kode");
-                    k.dosenNid = rs.getString("dosenNid");
-                    k.status = rs.getString("status");
-                    result.add(k);
+                    Peserta obj = new Peserta();
+                    obj.kelasKode = rs.getString("kelasKode");
+                    obj.nim = rs.getString("nim");
+                    obj.kehadiran = rs.getDouble("kehadiran");
+                    obj.tugas = rs.getDouble("tugas");
+                    obj.ujian = rs.getDouble("ujian");
+                    result.add(obj);
                 }
 
             }
@@ -191,4 +166,5 @@ public class Kelas {
     public String getErrMsg() {
         return this.errMsg;
     }
+
 }

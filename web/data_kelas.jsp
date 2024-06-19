@@ -15,9 +15,11 @@
     <body>
         <ul>
             <% for (Kelas baris : daftar) {%>
-            <li><%=baris.kode%></li>
-                <% }%>
+            <li><a href="form_kelas.jsp?kode=<%=baris.kode%>&mode=baca"><%=baris.kode%></a></li>
+            <% } %>
         </ul>
+        
+        <a href="form_kelas.jsp">Tambah Kelas</a>
 
     </body>
 </html>
