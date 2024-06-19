@@ -6,7 +6,8 @@
     User user = new User();
     if(user.login(username, password)) {
         session.setAttribute("id", username);
-        String redirectURL = "index.jsp";
-        response.sendRedirect(redirectURL);
+        response.sendRedirect("index.jsp");
+    } else {
+        response.sendRedirect("login.jsp");
     }
 %>

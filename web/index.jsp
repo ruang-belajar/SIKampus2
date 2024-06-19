@@ -1,20 +1,21 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="kampus.User" %>
-<%@page import="java.time.LocalDateTime" %>
-<%@page import="java.time.format.DateTimeFormatter" %>
+<%@page import="java.util.*" %>
+<%@page import="java.text.*" %>
+
 <%
-    String nama = "Budi";
-    LocalDateTime sekarang = LocalDateTime.now();
-    DateTimeFormatter cetakTanggal = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    Date HariSekarang = new Date();
+    SimpleDateFormat ft = new SimpleDateFormat("dd/MM/yyyy");
+
+    //System.out.println("Tanggal dan waktu saat ini: " + ft.format(HariSekarang));
+
     User user = new User();
 
     // check session var "id", kalau tidak kosong berarti baca sebagai id user
     if (session.getAttribute("id") != null) {
         String id = (String) session.getAttribute("id");
         user.baca(id, "DOSEN");  // semenntara, semua logi diaggap sebagai login dosen
-        
-        
-        
+
     } else { // kalau sessio var "id" kosong, redirect ke halama login
         response.sendRedirect("login.jsp");
     }
@@ -30,7 +31,7 @@
 
     <body>
         <div class="p-2 mb-2 text-center" style="background-color: lightgray">
-            Halo, <%=user.getNama()%> <a href="logout.jsp">logout</a> - <%= cetakTanggal.format(sekarang) %>
+            Halo, <%=user.getNama()%> <a href="logout.jsp">logout</a> <%=ft.format(HariSekarang)%>
         </div>
         <div class="text-center">
             <a href="data_mahasiswa.jsp" class="btn btn-primary">Mahasiswa</a>
