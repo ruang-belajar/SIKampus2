@@ -1,4 +1,4 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+1<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="kampus.Dosen" %>
 <%
     // inisialisasi objek

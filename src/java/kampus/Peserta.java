@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package kampus;
 
 import java.sql.Connection;
@@ -6,6 +10,10 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *
+ * @author En Tay
+ */
 public class Peserta {
 
     public String kelasKode;
@@ -33,10 +41,10 @@ public class Peserta {
 
             if (!connection.isClosed()) {
                 // 1. sesuaikan string SQL
-                String sql = "SELECT kelasKode, peserta.nim, nama, kehadiran, tugas, ujian"
+                String sql = "SELECT kelasKode, nim, nama, kehadiran, tugas, ujian"
                         + " FROM peserta "
                         + " inner join mahasiswa on peserta.nim=mahasiswa.nim"
-                        + " where kelasKode=? and peserta.nim=?";
+                        + " where kelasKode=? and nim=?";
                 PreparedStatement st = connection.prepareStatement(sql);
 
                 // 2. sesuaikan parameter

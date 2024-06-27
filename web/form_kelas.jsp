@@ -16,13 +16,8 @@
         kelas.kode = request.getParameter("kode");
         kelas.dosenNid = request.getParameter("dosenNid");
         kelas.status = request.getParameter("status");
-        if (kelas.tambah()) {
-            mode = "update";
-            hasil = "Berhasil ditambahkan";
-        } else {
-            hasil = "GAGAL: " + kelas.getErrMsg();
-        }
-
+        mode = "update";
+        hasil = "Berhasil ditambahkan";
     } else if (mode.equals("update")) {
         kelas.baca(request.getParameter("kode"));
         kelas.kode = request.getParameter("kode");
@@ -38,7 +33,7 @@
 
     // kalau kode tidak kosong, maka tampilk
     if (!kelas.kode.equals("")) {
-        daftarPeserta = kelas.getListPeserta();
+        daftarPeserta = Peserta.getList(kelas.kode);
     }
 
 %>
@@ -65,8 +60,17 @@
         <%=kelas.getErrMsg()%>
 
         <hr>
+        
+        <form action="dotambah_peserta.jsp" method="post">
+            Tambah Peserta Kelas:
+            <input name="kode">
+            <input name="nim">
+            <button type="submit">Tambah Peserta</button
+        </form>
 
-        <% if (daftarPeserta.size() > 0) { %>
+        <hr>
+        
+        <% if (daftarPeserta!=null) { %>
             <h3>Daftar Peserta</h3>
 
             <table>
