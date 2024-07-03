@@ -1,6 +1,8 @@
 package kampus;  // rubah nama paket sesuai dengan paket yang Anda miliki
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Mahasiswa {
 
@@ -13,7 +15,7 @@ public class Mahasiswa {
     public String status;
     public String usersId;
     protected Double ipk;
-    private String errMsg = "";
+    protected String errMsg = "";
 
     public Mahasiswa() {
         this.nim = "";
@@ -150,6 +152,34 @@ public class Mahasiswa {
             this.errMsg = "Koneksi ke database gagal";
         } catch (Exception ex) {
             this.errMsg = ex.toString();
+        }
+    }
+    
+    static public List<Mahasiswa> getList() {
+        // deklarasi variable yang bisa diakses di seluruh halaman
+        Connection connection = null;
+        ResultSet rs = null;
+        List<Mahasiswa> result = new ArrayList<>();
+
+
+        try {
+            connection = DatabaseTest.connect();
+
+            if (!connection.isClosed()) {
+                // prepare select statement
+                String sql = "SELECT * FROM mahasiswa";
+                PreparedStatement st = connection.prepareStatement(sql);
+                rs = st.executeQuery();
+
+                while(rs.next()) {
+                    Mahasiswa m = new Mahasiswa();
+                    m.baca(rs.getString("nim"));
+                    result.add(m);
+                }                
+            }
+            return result;
+        } catch (Exception ex) {
+            return null;
         }
     }
 
